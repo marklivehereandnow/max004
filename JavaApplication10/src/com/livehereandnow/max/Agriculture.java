@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.livehereandnow.max;
 
 /**
@@ -22,11 +21,9 @@ package com.livehereandnow.max;
 // === 拓展 ===
 //    礦場跟農業的需求其實一樣
 //    其他科技仍然可以直接使用，不用藍點即可
-
 //    每個物件要能記錄黃點、藍點、是否拿取、是否打出
-
-
 public class Agriculture {
+
     private int 黃點;
     private int 藍點;
     private boolean 拿取;
@@ -42,6 +39,22 @@ public class Agriculture {
     @Override
     public String toString() {
         return "{" + "\u9ec3\u9ede=" + 黃點 + ", \u85cd\u9ede=" + 藍點 + ", \u62ff\u53d6=" + 拿取 + ", \u6253\u51fa=" + 打出 + '}';
+    }
+
+    public String toString(int k) {
+        switch (k) {
+            case 1:
+                return 黃點 + "=>" + 藍點;
+            default:
+                return toString();
+        }
+
+    }
+
+    // 2014-4-22, by Mark
+    //    get農場(k).set藍點(get農場(k).get藍點() + get農場(k).get黃點());
+    public void doProduction() {
+        藍點 = 藍點 + 黃點;
     }
 
     public int get黃點() {
@@ -75,5 +88,5 @@ public class Agriculture {
     public void set打出(boolean 打出) {
         this.打出 = 打出;
     }
-    
+
 }

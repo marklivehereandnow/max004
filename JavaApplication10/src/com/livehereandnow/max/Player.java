@@ -361,6 +361,7 @@ public class Player {
     }
 
     private List<Card> 手上的牌;
+    private List<Card> cardsOnTable;
 
     //起始設定
     public Player() {
@@ -393,6 +394,7 @@ public class Player {
         資源 = 0;
         科技 = 0;
         手上的牌 = new ArrayList<Card>();
+        cardsOnTable = new ArrayList<Card>();
     }
 
     public int get文明() {
@@ -438,8 +440,12 @@ public class Player {
 
     public void 執行生產() {
         for (int k = 0; k < 4; k++) {
-            get農場(k).set藍點(get農場(k).get藍點() + get農場(k).get黃點());
-            get礦山(k).set藍點(get礦山(k).get藍點() + get礦山(k).get黃點());
+            //
+//            get農場(k).set藍點(get農場(k).get藍點() + get農場(k).get黃點());
+//            get礦山(k).set藍點(get礦山(k).get藍點() + get礦山(k).get黃點());
+            get農場(k).doProduction();
+            get礦山(k).doProduction();
+
         }
     }
 
@@ -451,7 +457,7 @@ public class Player {
     public void 展示現況() {
 //        System.out.println("執行展示...");
 //        for (int k = 0; k < 4; k++) {
-        for (int k = 3; k >=0; k--) {
+        for (int k = 3; k >= 0; k--) {
 //            System.out.println("k="+k);
             if (get農場(k).is打出() == true) {
                 System.out.print("農場" + k + "  " + get農場(k).get黃點() + "(黃點)/" + get農場(k).get藍點() + "(藍點)  ");
@@ -476,24 +482,90 @@ public class Player {
             if (get步兵(k).is打出() == true) {
                 System.out.println("步兵" + k + "  " + get步兵(k).get黃點() + "(黃點)  ");
             } else {
-                System.out.println("                        ");
+                System.out.print("                        ");
             }
         }
 
     }
 
-    public void do拿取(int 內政點數, Card 內政牌) {
-        手上的牌.add(內政牌);
-    }
+    public boolean doTakeCard(int cost, Card card) {
+        //TODO check any not allowed...
 
-    public void show手上的牌() {
+        if (card.get類型() == CardType.奇蹟) {
+            cardsOnTable.add(card);
 
-        for (int k = 0; k < 手上的牌.size(); k++) {
-            System.out.println(" " + 手上的牌.get(k));
+        } else {
+            手上的牌.add(card);
         }
+
+        //拿牌扣點
+        set內政點數(get內政點數() - cost);
+
+        return true;
     }
+
+    public void showStatus() {
+        System.out.print("\n   內政點數=" + get內政點數());
+        showCards();
+        System.out.println("\n   " + get點數());
+        show農場礦山實驗室神廟步兵();
+    }
+
     
     
+//            礦山 實驗室 神廟  步兵
+    
+    public void show農場礦山實驗室神廟步兵() {
+        String strAges[] = {"A", "I", "II", "III"};
+
+        System.out.print("   農場 (Ages)黃點=>藍點, ");
+        for (int k = 3; k >= 0; k--) {
+            System.out.print(" (" + strAges[k] + ")" + get農場(k).toString(1));
+        }
+        
+        System.out.print("\n   礦山 (Ages)黃點=>藍點, ");
+        for (int k = 3; k >= 0; k--) {
+            System.out.print(" (" + strAges[k] + ")" + get礦山(k).toString(1));
+        }
+        System.out.print("\n   實驗室 (Ages)黃點=>藍點, ");
+        for (int k = 3; k >= 0; k--) {
+            System.out.print(" (" + strAges[k] + ")" + get實驗室(k).toString(1));
+        }
+        System.out.print("\n   神廟 (Ages)黃點=>藍點, ");
+        for (int k = 3; k >= 0; k--) {
+            System.out.print(" (" + strAges[k] + ")" + get神廟(k).toString(1));
+        }
+        System.out.print("\n   步兵 (Ages)黃點=>藍點, ");
+        for (int k = 3; k >= 0; k--) {
+            System.out.print(" (" + strAges[k] + ")" + get步兵(k).toString(1));
+        }
+        
+        
+        
+        
+    }
+
+    public void showCards() {
+        System.out.print("\n   手牌 ");
+        showCardsOnHand();
+        System.out.print("   桌牌 ");
+        showCardsOnTable();
+    }
+
+    public void showCardsOnHand() {
+        for (int k = 0; k < 手上的牌.size(); k++) {
+            System.out.print(" " + 手上的牌.get(k).toString(1));
+        }
+        System.out.println();
+    }
+
+    public void showCardsOnTable() {
+        for (int k = 0; k < cardsOnTable.size(); k++) {
+            System.out.print(" " + cardsOnTable.get(k).toString(1));
+        }
+        //   System.out.println();
+    }
+
 //
 //    public void show() {
 //        System.out.print(" 手上的牌 ");
@@ -506,7 +578,6 @@ public class Player {
 //        System.out.println("  " + toString());
 //
 //    }
-
     @Override
     public String toString() {
         return "現有資源{" + "\u6587\u660e=" + 文明 + ", \u98df\u7269=" + 食物 + ", \u8cc7\u6e90=" + 資源 + ", \u79d1\u6280=" + 科技 + '}';

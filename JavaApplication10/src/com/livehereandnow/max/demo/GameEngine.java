@@ -73,10 +73,9 @@ public class GameEngine {
         return roundNum;
     }
 
-    public void do拿牌扣點(int 點數) {
-        玩家[當前玩家 - 1].set內政點數(玩家[當前玩家 - 1].get內政點數() - 點數);
-    }
-
+//    public void do拿牌扣點(int 點數) {
+//        玩家[當前玩家 - 1].set內政點數(玩家[當前玩家 - 1].get內政點數() - 點數);
+//    }
     public void set拿當前玩家拿過時代A領袖牌() {
         玩家[當前玩家 - 1].set拿過的時代A領袖牌數(1);
     }
@@ -86,11 +85,10 @@ public class GameEngine {
 
     }
 
-    public int get當前玩家拿過的時代A領袖牌數() {
-
-        return 玩家[當前玩家 - 1].get拿過的時代A領袖牌數();
-    }
-
+//    public int get當前玩家拿過的時代A領袖牌數() {
+//
+//        return 玩家[當前玩家 - 1].get拿過的時代A領袖牌數();
+//    }
     public int get當前玩家() {
         return 當前玩家;
     }
@@ -104,15 +102,13 @@ public class GameEngine {
         showCardRow();
         System.out.println();
         System.out.println("   === Round #" + roundNum + " ===");
-        System.out.print("   Player 1 內政點數=" + 玩家[0].get內政點數() + "\n   手上的牌 " + getPlayerCardsString(玩家1手牌));
-        System.out.print("\n   桌上的牌 " + getPlayerCardsString(玩家1桌牌));
-        System.out.println("\n   " + 玩家[0].get點數());
-
-        System.out.print("\n   Player 2 內政點數=" + 玩家[1].get內政點數() + "\n   手上的牌 " + getPlayerCardsString(player2Cards));
-        System.out.print("\n   桌上的牌 " + getPlayerCardsString(this.player2CardsOnTable));
-        System.out.println("\n   " + 玩家[1].get點數());
-
+        System.out.print("   Player A ");
+        玩家[0].showStatus();
+        System.out.print("\n\n   Player B");
+        玩家[1].showStatus();
         System.out.println();
+        System.out.println();
+
     }
 
     public void showCardRow() {
@@ -158,10 +154,10 @@ public class GameEngine {
 //        玩家[當前玩家].get農業(0).set藍點(玩家[當前玩家].get農業(0).get藍點() + 玩家[當前玩家].get農業(0).get黃點());
 //      希望在Player有像這樣的一個高階指令
 //        玩家[當前玩家].get農業(0).執行生產
-        玩家[當前玩家].執行生產();
+        玩家[當前玩家 - 1].執行生產(); //TODO, BECAUSE IT'S O BASE
 
-        System.out.println("運行XXX後");
-        玩家[當前玩家].展示現況();
+        //   System.out.println("運行XXX後");
+        玩家[當前玩家 - 1].展示現況();
 //        System.out.print("農業I " + 玩家[當前玩家].get農場(0).get黃點() + "(黃點)/" + 玩家[當前玩家].get農場(0).get藍點() + "(藍點)    ");
 //        System.out.print("礦山I  " + 玩家[當前玩家].get農場(0).get黃點() + "(黃點)/" + 玩家[當前玩家].get農場(0).get藍點() + "(藍點)    ");
 //        System.out.print("實驗室I  " + 玩家[當前玩家].get農場(0).get黃點() + "(黃點)/   ");
@@ -257,6 +253,27 @@ public class GameEngine {
      * @return true: perform take-card successfully
      */
     public boolean doTakeCard(int k) {
+        Card card = cardRow.get(k);
+        int cardPoint = CARD_POINT[k];
+
+//        if (card.get卡名().length() == 0) {
+//            System.out.println("This card has been taken! ***Nothing happened***");
+//            return true;
+//        }
+        if (this.get玩家(this.當前玩家 - 1).doTakeCard(cardPoint, card)) {
+            // when card is taken successfully
+            cardRow.remove(k);//從卡牌列上移除該牌
+            cardRow.add(k, NOCARD);//並在卡牌列同一個位置增加空牌
+
+        }
+
+    //    do拿牌扣點(cardPoint);
+        return true;
+    }
+
+    //XXX is to retire
+    // 2014-4-22, by Mark
+    public boolean XXXdoTakeCard(int k) {
         // System.out.println("DOING TAKE CARD ...");
 
         Card card = cardRow.get(k);
@@ -326,7 +343,7 @@ public class GameEngine {
             }
         }
         System.out.println("player" + 當前玩家 + " 拿取 [" + cardRow.get(k).get卡名() + "]");
-        do拿牌扣點(cardPoint);
+        //   do拿牌扣點(cardPoint);
         cardRow.remove(k);//從卡牌列上移除該牌
         cardRow.add(k, NOCARD);//並在卡牌列同一個位置增加空牌
 
@@ -360,8 +377,14 @@ public class GameEngine {
         System.out.println();
 
         System.out.println("  === ver 0.22 ===  2014-4-22, 18:00, by Mark　");
+        System.out.println("    1. create doTakeCard on Player");
+        System.out.println("    2. improve doStatus layout --- show 農場 (Ages)黃點=>藍點,  (III)0=>0 (II)0=>0 (I)0=>0 (A)2=>2");
+        System.out.println();
+
+        System.out.println("  === ver 0.22 ===  2014-4-22, 18:00, by Mark　");
         System.out.println("    1. implement --- A Wonder goes directly to the table. Only one Wonder can be “under construction”.");
         System.out.println("    2. improve doStatus layout");
+        System.out.println();
 
         System.out.println("  === ver 0.21 ===  2014-4-22, 12:21, by MAX　");
         System.out.println("    1. 新增out-card指令用於打出手牌");

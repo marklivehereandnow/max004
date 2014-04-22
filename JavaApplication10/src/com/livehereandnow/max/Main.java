@@ -255,7 +255,7 @@ public class Main implements CardType {
         }
         System.out.println("我的選擇優先次序是取加權值最大的");
         System.out.println("目前按程序開發先盲目選第0張");
-           p1.do拿取(1,檯面13張.get(0));
+           p1.doTakeCard(1,檯面13張.get(0));
         System.out.println("給第2玩家2個內政點");
         // 顯示狀態();
         //模擬第一回合的動作
