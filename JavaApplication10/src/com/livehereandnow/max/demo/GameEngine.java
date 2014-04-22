@@ -36,9 +36,15 @@ public class GameEngine {
 //  待優化  
     private List<Card> 玩家1手牌;
     private List<Card> 玩家1桌牌;
-    private List<Card> player2Cards;
+    private List<Card> player2Cards; // on-hand
+    private List<Card> player2CardsOnTable;
+
     private List<Card> player3Cards;
     private List<Card> player4Cards;
+
+    private List<Card> player3CardsOnTable;
+    private List<Card> player4CardsOnTable;
+
 //  待優化
     private Player[] 玩家 = new Player[4];
 
@@ -98,19 +104,15 @@ public class GameEngine {
         showCardRow();
         System.out.println();
         System.out.println("   === Round #" + roundNum + " ===");
-        System.out.println("   Player 1 內政點數=" + 玩家[0].get內政點數() + "   手上的牌 " + getPlayerCardsString(玩家1手牌));
-       System.out.println( "  桌上的牌 " + getPlayerCardsString(玩家1桌牌));
-        System.out.println("   Player 1 " + 玩家[0].get點數());
+        System.out.print("   Player 1 內政點數=" + 玩家[0].get內政點數() + "\n   手上的牌 " + getPlayerCardsString(玩家1手牌));
+        System.out.print("\n   桌上的牌 " + getPlayerCardsString(玩家1桌牌));
+        System.out.println("\n   " + 玩家[0].get點數());
 
-        System.out.println("   Player 2 內政點數=" + 玩家[1].get內政點數() + "   手上的牌 " + getPlayerCardsString(player2Cards));
-        System.out.println("   Player 2 " + 玩家[1].get點數());
+        System.out.print("\n   Player 2 內政點數=" + 玩家[1].get內政點數() + "\n   手上的牌 " + getPlayerCardsString(player2Cards));
+        System.out.print("\n   桌上的牌 " + getPlayerCardsString(this.player2CardsOnTable));
+        System.out.println("\n   " + 玩家[1].get點數());
 
-        if (玩家人數 >= 3) {
-            System.out.println("   Player 3 內政點數=" + 玩家[2].get內政點數() + getPlayerCardsString(player3Cards));
-        }
-        if (玩家人數 == 4) {
-            System.out.println("   Player 4 內政點數=" + 玩家[3].get內政點數() + getPlayerCardsString(player4Cards));
-        }
+        System.out.println();
     }
 
     public void showCardRow() {
@@ -208,7 +210,10 @@ public class GameEngine {
         player2Cards = new ArrayList<>();
         player3Cards = new ArrayList<>();
         player4Cards = new ArrayList<>();
-        玩家1桌牌= new ArrayList<>();
+        玩家1桌牌 = new ArrayList<>();
+        player2CardsOnTable = new ArrayList<>();
+        player3CardsOnTable = new ArrayList<>();
+        player4CardsOnTable = new ArrayList<>();
 
         Collections.shuffle(ageA內政牌);
 //        System.out.println("system >>> shuffle Age A 內政牌");
@@ -280,21 +285,45 @@ public class GameEngine {
         }
         //TODO(4)不允許拿兩張同名的科技牌
         // === maintain take-card successfully ===
-        switch (當前玩家) {
-            case 1:
-                玩家1手牌.add(cardRow.get(k));
-                break;
-            case 2:
-                player2Cards.add(cardRow.get(k));
-                break;
-            case 3:
-                player3Cards.add(cardRow.get(k));
-                break;
-            case 4:
-                player4Cards.add(cardRow.get(k));
-                break;
-            default:
-                return false;
+
+        // 2014-4-22, by Mark
+        //A Wonder goes directly to the table. Only one Wonder can be “under construction”.
+        if (card.get類型() == CardType.奇蹟) {
+            switch (當前玩家) {
+                case 1:
+                    玩家1桌牌.add(cardRow.get(k));
+                    break;
+                case 2:
+                    player2CardsOnTable.add(cardRow.get(k));
+                    break;
+                case 3:
+                    player3CardsOnTable.add(cardRow.get(k));
+                    break;
+                case 4:
+                    player4CardsOnTable.add(cardRow.get(k));
+                    break;
+                default:
+                    return false;
+            }
+
+        } else {
+
+            switch (當前玩家) {
+                case 1:
+                    玩家1手牌.add(cardRow.get(k));
+                    break;
+                case 2:
+                    player2Cards.add(cardRow.get(k));
+                    break;
+                case 3:
+                    player3Cards.add(cardRow.get(k));
+                    break;
+                case 4:
+                    player4Cards.add(cardRow.get(k));
+                    break;
+                default:
+                    return false;
+            }
         }
         System.out.println("player" + 當前玩家 + " 拿取 [" + cardRow.get(k).get卡名() + "]");
         do拿牌扣點(cardPoint);
@@ -330,7 +359,11 @@ public class GameEngine {
 
         System.out.println();
 
-                System.out.println("  === ver 0.21 ===  2014-4-22, 12:21, by MAX　");
+        System.out.println("  === ver 0.22 ===  2014-4-22, 18:00, by Mark　");
+        System.out.println("    1. implement --- A Wonder goes directly to the table. Only one Wonder can be “under construction”.");
+        System.out.println("    2. improve doStatus layout");
+
+        System.out.println("  === ver 0.21 ===  2014-4-22, 12:21, by MAX　");
         System.out.println("    1. 新增out-card指令用於打出手牌");
         System.out.println("    2. 增加玩家桌面的牌");
         System.out.println("    3. 顯示桌牌的內容");
@@ -497,29 +530,27 @@ public class GameEngine {
                     int cardNum = Integer.parseInt(tokens.get(1));
                     System.out.println("手牌共有幾張" + 玩家1手牌.size() + "張");
                     System.out.println("要打第" + cardNum + "張");
-                    if(玩家1手牌.size()==0)
-                    {
+                    if (玩家1手牌.size() == 0) {
                         System.out.println("手上沒有牌不能打");
                         return true;
                     }
                     if (玩家1手牌.size() < cardNum + 1) {//當手上只有一張牌時，玩家1手牌SIZE=手上有幾張
-                        System.out.println("你只能選擇0到" + (玩家1手牌.size()-1));
-                        
+                        System.out.println("你只能選擇0到" + (玩家1手牌.size() - 1));
+
                         return true;
                     }
 
                     System.out.println("打牌這張牌是" + 玩家1手牌.get(cardNum));
-                    System.out.println("DOING打牌後手牌消失在桌牌上顯示" );
-                    System.out.println("該玩家手牌為:"+玩家1手牌.get(cardNum) );
+                    System.out.println("DOING打牌後手牌消失在桌牌上顯示");
+                    System.out.println("該玩家手牌為:" + 玩家1手牌.get(cardNum));
                     玩家1桌牌.add(玩家1手牌.get(cardNum));
                     玩家1手牌.remove(cardNum);
 //                    for(k=0;k<50;k++)
 //                    if(玩家1手牌.get(cardNum).get編號()==k){
 //                        玩家[0].
 //                    }
-                    System.out.println("該玩家桌牌為:"+玩家1桌牌.get(cardNum) );
-                    
-                    
+                    System.out.println("該玩家桌牌為:" + 玩家1桌牌.get(cardNum));
+
                     return true;
 
                 }
