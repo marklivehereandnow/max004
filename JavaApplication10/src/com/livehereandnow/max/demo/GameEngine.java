@@ -376,7 +376,7 @@ public class GameEngine {
 
         System.out.println();
 
-        System.out.println("  === ver 0.22 ===  2014-4-22, 18:00, by Mark　");
+        System.out.println("  === ver 0.23 ===  2014-4-22, 20:30, by Mark　");
         System.out.println("    1. create doTakeCard on Player");
         System.out.println("    2. improve doStatus layout --- show 農場 (Ages)黃點=>藍點,  (III)0=>0 (II)0=>0 (I)0=>0 (A)2=>2");
         System.out.println();
