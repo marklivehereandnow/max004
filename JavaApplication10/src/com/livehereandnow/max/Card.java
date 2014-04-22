@@ -122,7 +122,17 @@ public class Card implements CardType {
     }
 
     public String toString(int k) {
-        return "[" + get時代名() + get牌背名() + "-" + get卡名() + "-" + get類型Name() + "] ";
+        switch (k) {
+            case 1:
+            //  Value 1: 0[時代A內政-荷馬-領袖] 1[] 2[時代A內政-凱薩-領袖] 3[時代A內政-空中花園-奇蹟] 4[時代A內政-農業-科技] 
+                if (卡名.equalsIgnoreCase("")) {
+
+                    return "[] ";
+                }
+                return "[" + get時代名() + get牌背名() + "-" + get卡名() + "-" + get類型Name() + "] ";
+            default:
+                return toString();
+        }
     }
 
 //        System.out.print(k + "[" + cardRow.get(k).get時代名()+cardRow.get(k).get牌背名() + "-" + cardRow.get(k).get卡名() + "-" + cardRow.get(k).get類型Name() + "] ");

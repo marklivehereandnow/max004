@@ -492,6 +492,8 @@ public class Player {
             System.out.println(" " + 手上的牌.get(k));
         }
     }
+    
+    
 //
 //    public void show() {
 //        System.out.print(" 手上的牌 ");
