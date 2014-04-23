@@ -5,7 +5,7 @@
 
 
  */
-package com.livehereandnow.max;
+package com.livehereandnow.ages.components;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,15 @@ import java.util.List;
  * @author max
  */
 public class Player {
+    private String name;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
     public class Score {
 
         public int get文化生產() {

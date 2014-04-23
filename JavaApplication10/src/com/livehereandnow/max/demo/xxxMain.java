@@ -3,8 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.livehereandnow.max;
+package com.livehereandnow.max.demo;
 
+import com.livehereandnow.ages.components.Card;
+import com.livehereandnow.ages.components.CardType;
+import com.livehereandnow.ages.components.Player;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +16,7 @@ import java.util.List;
  *
  * @author max
  */
-public class Main implements CardType {
+public class xxxMain implements CardType {
 //時代A共有20張牌遊戲開始時 隨機選出13張牌
     //public Card(int 編號, String 卡名, int 時代, int 類型
     // Card[] showcards=new Card[13];
@@ -90,7 +93,7 @@ public class Main implements CardType {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Main myGame = new Main();
+        xxxMain myGame = new xxxMain();
 
         myGame.startGame();
 
@@ -251,7 +254,7 @@ public class Main implements CardType {
 
         for (int k = 0; k < 5; k++) {
          //   System.out.println("   第" + k + "張 " + 時代A內政牌.get(k).卡名);
-            System.out.println("   第" + k + "張 " + 檯面13張.get(k).卡名+檯面13張.get(k).加權值);
+//            System.out.println("   第" + k + "張 " + 檯面13張.get(k).卡名+檯面13張.get(k).加權值);
         }
         System.out.println("我的選擇優先次序是取加權值最大的");
         System.out.println("目前按程序開發先盲目選第0張");

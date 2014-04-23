@@ -9,12 +9,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.livehereandnow.max.demo;
+package com.livehereandnow.ages.engine;
 
-import com.livehereandnow.max.Card;
-import com.livehereandnow.max.CardType;
-import com.livehereandnow.max.Cards;
-import com.livehereandnow.max.Player;
+import com.livehereandnow.ages.components.Card;
+import com.livehereandnow.ages.components.CardType;
+import com.livehereandnow.ages.components.Cards;
+import com.livehereandnow.ages.components.Player;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +24,7 @@ import java.util.List;
  *
  * @author chenp_000
  */
-public class GameEngine {
+public class Engine {
 //注意
 //class名稱一律大寫開頭
 //   變量一律小寫開頭,第二個英文字要大寫開頭,例如cardRow
@@ -34,19 +34,28 @@ public class GameEngine {
     private List<Card> ageA內政牌;
     private List<Card> cardRow;
 //  待優化  
-    private List<Card> 玩家1手牌;
-    private List<Card> 玩家1桌牌;
-    private List<Card> player2Cards; // on-hand
-    private List<Card> player2CardsOnTable;
-
-    private List<Card> player3Cards;
-    private List<Card> player4Cards;
-
-    private List<Card> player3CardsOnTable;
-    private List<Card> player4CardsOnTable;
+//    private List<Card> 玩家1手牌;
+//    private List<Card> 玩家1桌牌;
+//    private List<Card> player2Cards; // on-hand
+//    private List<Card> player2CardsOnTable;
+//
+//    private List<Card> player3Cards;
+//    private List<Card> player4Cards;
+//
+//    private List<Card> player3CardsOnTable;
+//    private List<Card> player4CardsOnTable;
 
 //  待優化
     private Player[] 玩家 = new Player[4];
+    private Player 當前玩家;
+
+    public Player get當前玩家() {
+        return 當前玩家;
+    }
+
+    public void set當前玩家(Player current玩家) {
+        this.當前玩家 = current玩家;
+    }
 
     public Player get玩家(int k) {
         return 玩家[k];
@@ -65,7 +74,7 @@ public class GameEngine {
     final Card NOCARD = new Card(999, "", 0, CardType.EMPTY);
 //    int playerm
 //    2014-4-16 max 10:32,使用refactor變更變量名稱
-    int 當前玩家;
+    int 當前玩家ID;
     int 玩家人數 = 2;
     int roundNum;
 
@@ -74,23 +83,23 @@ public class GameEngine {
     }
 
 //    public void do拿牌扣點(int 點數) {
-//        玩家[當前玩家 - 1].set內政點數(玩家[當前玩家 - 1].get內政點數() - 點數);
+//        玩家[當前玩家ID - 1].set內政點數(玩家[當前玩家ID - 1].get內政點數() - 點數);
 //    }
     public void set拿當前玩家拿過時代A領袖牌() {
-        玩家[當前玩家 - 1].set拿過的時代A領袖牌數(1);
+        玩家[當前玩家ID - 1].set拿過的時代A領袖牌數(1);
     }
 
     public int get當前玩家內政點數() {
-        return 玩家[當前玩家 - 1].get內政點數();
+        return 玩家[當前玩家ID - 1].get內政點數();
 
     }
 
 //    public int get當前玩家拿過的時代A領袖牌數() {
 //
-//        return 玩家[當前玩家 - 1].get拿過的時代A領袖牌數();
+//        return 玩家[當前玩家ID - 1].get拿過的時代A領袖牌數();
 //    }
-    public int get當前玩家() {
-        return 當前玩家;
+    public int get當前玩家ID() {
+        return 當前玩家ID;
     }
 
     public List<Card> getAgeA內政牌() {
@@ -102,9 +111,9 @@ public class GameEngine {
         showCardRow();
         System.out.println();
         System.out.println("   === Round #" + roundNum + " ===");
-        System.out.print("   Player A ");
+        System.out.print("   --- Player A is " + 玩家[0].getName()+" ---");
         玩家[0].showStatus();
-        System.out.print("\n\n   Player B");
+        System.out.print("\n\n   --- Player B is " + 玩家[1].getName()+" ---");
         玩家[1].showStatus();
         System.out.println();
         System.out.println();
@@ -142,55 +151,41 @@ public class GameEngine {
 
     public void doChangeTurn() {
 
-        System.out.println("運行doChangeTurn");
-//        System.out.println("\n農業A" + 玩家[當前玩家].get農業(0).get黃點()+"(黃點)/"+玩家[當前玩家].get農業(0).get藍點()+"(藍點)");
-//        依照農場A黃點的值，增加農場A的藍點---自評8分
-        /*
-         設定[當前玩家在時代A的農業的藍點指數]=[當前玩家的時代A的農業的藍點]+[當前玩家的時代A的農業的黃點]
-         [當前玩家的時代A的農業的藍點]=
-         [當前玩家的時代A的農業的黃點]=
-        
-         */
-//        玩家[當前玩家].get農業(0).set藍點(玩家[當前玩家].get農業(0).get藍點() + 玩家[當前玩家].get農業(0).get黃點());
-//      希望在Player有像這樣的一個高階指令
-//        玩家[當前玩家].get農業(0).執行生產
-        玩家[當前玩家 - 1].執行生產(); //TODO, BECAUSE IT'S O BASE
+      //  System.out.println("運行doChangeTurn");
+        get當前玩家().執行生產();
 
-        //   System.out.println("運行XXX後");
-        玩家[當前玩家 - 1].展示現況();
-//        System.out.print("農業I " + 玩家[當前玩家].get農場(0).get黃點() + "(黃點)/" + 玩家[當前玩家].get農場(0).get藍點() + "(藍點)    ");
-//        System.out.print("礦山I  " + 玩家[當前玩家].get農場(0).get黃點() + "(黃點)/" + 玩家[當前玩家].get農場(0).get藍點() + "(藍點)    ");
-//        System.out.print("實驗室I  " + 玩家[當前玩家].get農場(0).get黃點() + "(黃點)/   ");
-//        System.out.print("神廟I  " + 玩家[當前玩家].get農場(0).get黃點() + "(黃點)/ ");
-//        System.out.println("步兵I  " + 玩家[當前玩家].get農場(0).get黃點() + "(黃點)/    ");
-//        System.out.print("農業A  " + 玩家[當前玩家].get農場(0).get黃點() + "(黃點)/" + 玩家[當前玩家].get農場(0).get藍點() + "(藍點)    ");
-//        System.out.print("礦山A  " + 玩家[當前玩家].get農場(0).get黃點() + "(黃點)/" + 玩家[當前玩家].get農場(0).get藍點() + "(藍點)    ");
-//        System.out.print("實驗室A  " + 玩家[當前玩家].get農場(0).get黃點() + "(黃點)/   ");
-//        System.out.print("神廟A  " + 玩家[當前玩家].get農場(0).get黃點() + "(黃點)/ ");
-//        System.out.println("步兵A  " + 玩家[當前玩家].get農場(0).get黃點() + "(黃點)/    ");
-        //    System.out.println("當前玩家農業A上面的藍點為" + 玩家[當前玩家].get農業(0).get藍點());
-        if (當前玩家 == 玩家人數) {
-            當前玩家 = 1;
+        if ((1 + 當前玩家ID) == 玩家人數) {
+            當前玩家ID = 0;
             roundNum++;
+
             玩家[0].set內政點數(4);
             玩家[1].set內政點數(4);
             玩家[2].set內政點數(4);
             玩家[3].set內政點數(4);
 
         } else {
-            當前玩家++;
+            當前玩家ID++;
         }
-        System.out.println("change turn to player" + this.get當前玩家());
+        this.set當前玩家(玩家[當前玩家ID]);
+
+        //System.out.println("Change turn to player " + this.get當前玩家());
 
     }
 
-    public GameEngine() {
+    public Engine() {
         玩家[0] = new Player();
         玩家[1] = new Player();
         玩家[2] = new Player();
         玩家[3] = new Player();
 
-        當前玩家 = 1;
+        玩家[0].setName("Max");
+        玩家[1].setName("Amy");
+
+        當前玩家 = 玩家[0];
+
+        //當前玩家ID = 1; // TODO .... PROBLEM
+        當前玩家ID = 0; // TODO .... PROBLEM
+
         roundNum = 1;
 
         玩家[0].set內政點數(1);
@@ -202,14 +197,14 @@ public class GameEngine {
         ageA內政牌 = cards.get時代A內政牌();
 
         cardRow = new ArrayList<>();
-        玩家1手牌 = new ArrayList<>();
-        player2Cards = new ArrayList<>();
-        player3Cards = new ArrayList<>();
-        player4Cards = new ArrayList<>();
-        玩家1桌牌 = new ArrayList<>();
-        player2CardsOnTable = new ArrayList<>();
-        player3CardsOnTable = new ArrayList<>();
-        player4CardsOnTable = new ArrayList<>();
+//        玩家1手牌 = new ArrayList<>();
+//        player2Cards = new ArrayList<>();
+//        player3Cards = new ArrayList<>();
+//        player4Cards = new ArrayList<>();
+//        玩家1桌牌 = new ArrayList<>();
+//        player2CardsOnTable = new ArrayList<>();
+//        player3CardsOnTable = new ArrayList<>();
+//        player4CardsOnTable = new ArrayList<>();
 
         Collections.shuffle(ageA內政牌);
 //        System.out.println("system >>> shuffle Age A 內政牌");
@@ -234,7 +229,7 @@ public class GameEngine {
     }
 
     public boolean doSetCulture(int k) {
-        玩家[當前玩家 - 1].get點數().set文化(k);
+        玩家[當前玩家ID - 1].get點數().set文化(k);
         return true;
     }
 
@@ -253,6 +248,19 @@ public class GameEngine {
      * @return true: perform take-card successfully
      */
     public boolean doTakeCard(int k) {
+        int cardNum = k;
+        if (cardNum > 12 || cardNum < 0) { // card number must be 0 to 12 only 
+//                        System.out.println("card number must be 0 to 12 only *** Nothing happened ***");
+            System.out.println("拿的牌號必須要在0~12之內 *** 什麼事情都沒發生 ***");
+            return true;
+        }
+        if (cardRow.get(cardNum).get編號() == 999) {
+//                        System.out.println("不讓玩家拿空牌 *** Nothing happened ***");
+            System.out.println("不讓玩家拿空牌 *** 什麼事情都沒發生 ***");
+
+            return true;
+        }
+
         Card card = cardRow.get(k);
         int cardPoint = CARD_POINT[k];
 
@@ -260,93 +268,14 @@ public class GameEngine {
 //            System.out.println("This card has been taken! ***Nothing happened***");
 //            return true;
 //        }
-        if (this.get玩家(this.當前玩家 - 1).doTakeCard(cardPoint, card)) {
+        if (this.get當前玩家().doTakeCard(cardPoint, card)) {
             // when card is taken successfully
             cardRow.remove(k);//從卡牌列上移除該牌
             cardRow.add(k, NOCARD);//並在卡牌列同一個位置增加空牌
 
         }
 
-    //    do拿牌扣點(cardPoint);
-        return true;
-    }
-
-    //XXX is to retire
-    // 2014-4-22, by Mark
-    public boolean XXXdoTakeCard(int k) {
-        // System.out.println("DOING TAKE CARD ...");
-
-        Card card = cardRow.get(k);
-
-        // === preparation for take-card ===拿牌前的準備
-        //(1)enough point to take card點數要夠
-        int cardPoint = CARD_POINT[k];
-//        if (get當前玩家內政點數() < cardPoint) {
-//            System.out.println("Not enough point to take card. ***Nothing happened***");
-//            return true;
-//        }
-
-        //(2)not allow to take any card which is being taken within this round 不允許拿空牌
-        if (card.get卡名().length() == 0) {
-            System.out.println("This card has been taken! ***Nothing happened***");
-            return true;
-        }
-
-        //(3)not allow to take AgeA leader if you ever took it successfully 不允許拿兩張A時代領袖的牌
-        if (card.get時代() == 0 && card.get類型() == CardType.領袖) {
-            if (isPlayerPossessedAgeALeader(get當前玩家())) {
-                System.out.println("You are/were holing Age A leader before!***Nothing happened***");
-                return true;
-            }
-            setPlayerPossessedAgeALeader(get當前玩家());
-        }
-        //TODO(4)不允許拿兩張同名的科技牌
-        // === maintain take-card successfully ===
-
-        // 2014-4-22, by Mark
-        //A Wonder goes directly to the table. Only one Wonder can be “under construction”.
-        if (card.get類型() == CardType.奇蹟) {
-            switch (當前玩家) {
-                case 1:
-                    玩家1桌牌.add(cardRow.get(k));
-                    break;
-                case 2:
-                    player2CardsOnTable.add(cardRow.get(k));
-                    break;
-                case 3:
-                    player3CardsOnTable.add(cardRow.get(k));
-                    break;
-                case 4:
-                    player4CardsOnTable.add(cardRow.get(k));
-                    break;
-                default:
-                    return false;
-            }
-
-        } else {
-
-            switch (當前玩家) {
-                case 1:
-                    玩家1手牌.add(cardRow.get(k));
-                    break;
-                case 2:
-                    player2Cards.add(cardRow.get(k));
-                    break;
-                case 3:
-                    player3Cards.add(cardRow.get(k));
-                    break;
-                case 4:
-                    player4Cards.add(cardRow.get(k));
-                    break;
-                default:
-                    return false;
-            }
-        }
-        System.out.println("player" + 當前玩家 + " 拿取 [" + cardRow.get(k).get卡名() + "]");
-        //   do拿牌扣點(cardPoint);
-        cardRow.remove(k);//從卡牌列上移除該牌
-        cardRow.add(k, NOCARD);//並在卡牌列同一個位置增加空牌
-
+        //    do拿牌扣點(cardPoint);
         return true;
     }
 
@@ -376,7 +305,15 @@ public class GameEngine {
 
         System.out.println();
 
-        System.out.println("  === ver 0.23 ===  2014-4-22, 20:30, by Mark　");
+        System.out.println("  === ver 0.24 ===  2014-4-23, 8:30, by Mark　");
+        System.out.println("    1. rearrange package");
+        System.out.println("    2. new com.livehereandnow.ages.Main");
+        System.out.println("    3. new com.livehereandnow.ages.engine.Engine");
+        System.out.println("    4. player with name, Max and Amy");
+        
+        
+        System.out.println();
+ System.out.println("  === ver 0.23 ===  2014-4-22, 20:30, by Mark　");
         System.out.println("    1. create doTakeCard on Player");
         System.out.println("    2. improve doStatus layout --- show 農場 (Ages)黃點=>藍點,  (III)0=>0 (II)0=>0 (I)0=>0 (A)2=>2");
         System.out.println();
@@ -502,8 +439,19 @@ public class GameEngine {
 
     }
 
+    /**
+     * design command as type 1, single word, version help status type 2,
+     * keyword + parameter, take-card 1 take 1 play-card 1 play 1
+     *
+     * @param cmd
+     * @return
+     * @throws IOException
+     */
     public boolean doCmd(String cmd) throws IOException {
-        String cleanCmd = cmd.trim();//           取消全部轉小寫
+        int tokenCnt = 0;
+        String keyword = "";
+        int parameter = -1;
+
         String[] strTokens = cmd.split(" ");
         List<String> tokens = new ArrayList<>();
         for (String item : strTokens) {
@@ -511,92 +459,92 @@ public class GameEngine {
                 tokens.add(item);
             }
         }
+        if (tokens.size() > 2) {
+            System.out.println("Command must be one or two words only!");
+            return false;
+        }
 
-        switch (cleanCmd) {
-            case "help": {
-                doHelp();
-                return true;
+        if (tokens.size() == 2) {
+            try {
+                parameter = Integer.parseInt(tokens.get(1));
+            } catch (Exception ex) {
+                System.out.println("Parameter must be 0 or positive integer");
+                return false;
             }
+        }
+        // 2014-4-23, use keyword, the first word
+        keyword = tokens.get(0);
+        tokenCnt = tokens.size();
 
-            case "hint": {
-                System.out.println("to show what user can do now");
-                return true;
-            }
-
-            case "status": {
-                doStatus();
-                return true;
-            }
-
-            case "TODO": {
-                doTODO();
-                return true;
-            }
-            case "version": {
-                doVersion();
-                return true;
-            }
-            case "change-turn": {
-                doChangeTurn();
-                return true;
-            }
-
-//            case "out":{
-//                玩家1手牌
-//            }
-            default:
-                if (tokens.get(0).equalsIgnoreCase("out-card") || tokens.get(0).equalsIgnoreCase("out")) {//新增一個指令如果是out-card或是out開頭就會到這邊來
-                    if (tokens.size() != 2) { // 
-                        System.out.println("指令必須是2個字，第一個字已經是out-card或是out");
-                        return false;
-                    }
-                    int cardNum = Integer.parseInt(tokens.get(1));
-                    System.out.println("手牌共有幾張" + 玩家1手牌.size() + "張");
-                    System.out.println("要打第" + cardNum + "張");
-                    if (玩家1手牌.size() == 0) {
-                        System.out.println("手上沒有牌不能打");
-                        return true;
-                    }
-                    if (玩家1手牌.size() < cardNum + 1) {//當手上只有一張牌時，玩家1手牌SIZE=手上有幾張
-                        System.out.println("你只能選擇0到" + (玩家1手牌.size() - 1));
-
-                        return true;
-                    }
-
-                    System.out.println("打牌這張牌是" + 玩家1手牌.get(cardNum));
-                    System.out.println("DOING打牌後手牌消失在桌牌上顯示");
-                    System.out.println("該玩家手牌為:" + 玩家1手牌.get(cardNum));
-                    玩家1桌牌.add(玩家1手牌.get(cardNum));
-                    玩家1手牌.remove(cardNum);
-//                    for(k=0;k<50;k++)
-//                    if(玩家1手牌.get(cardNum).get編號()==k){
-//                        玩家[0].
-//                    }
-                    System.out.println("該玩家桌牌為:" + 玩家1桌牌.get(cardNum));
-
+        // === for one word command ===
+        if (tokenCnt == 1) {
+            switch (keyword) {
+                case "help": {
+                    doHelp();
                     return true;
-
-                }
-                if (tokens.get(0).equalsIgnoreCase("take-card") || tokens.get(0).equalsIgnoreCase("take")) {//簡易指令take
-                    if (tokens.size() != 2) { // take-card X, X is a must 目前只支持一次拿一張卡
-                        return false;
-                    }
-                    int cardNum = Integer.parseInt(tokens.get(1));//將第二個字符串轉為整數,第二個的序號為1
-                    if (cardNum > 12 || cardNum < 0) { // card number must be 0 to 12 only 
-//                        System.out.println("card number must be 0 to 12 only *** Nothing happened ***");
-                        System.out.println("拿的牌號必須要在0~12之內 *** 什麼事情都沒發生 ***");
-                        return true;
-                    }
-                    if (cardRow.get(cardNum).get編號() == 999) {
-//                        System.out.println("不讓玩家拿空牌 *** Nothing happened ***");
-                        System.out.println("不讓玩家拿空牌 *** 什麼事情都沒發生 ***");
-
-                        return true;
-                    }
-                    return doTakeCard(cardNum);
                 }
 
-                //在命令行設定文化指數
+                case "hint": {
+                    System.out.println("TODO ...to show what user can do now");
+                    return true;
+                }
+
+                case "status": {
+                    doStatus();
+                    return true;
+                }
+
+                case "TODO": {
+                    doTODO();
+                    return true;
+                }
+                case "version": {
+                    doVersion();
+                    return true;
+                }
+                case "change-turn": {
+                    doChangeTurn();
+                    return true;
+                }
+                //     default:
+            }
+            System.out.println("Unknown keyword, " + keyword);
+            return false;
+
+        }
+
+        // === for two words command ===
+        switch (keyword) {
+            case "打":
+            case "out":
+            case "play":
+            case "play-card":
+            case "out-card": {
+//                if (玩家1手牌.size() == 0) {
+//                    System.out.println("手上沒有牌不能打");
+//                    return true;
+//                }
+//                if (玩家1手牌.size() < parameter + 1) {//當手上只有一張牌時，玩家1手牌SIZE=手上有幾張
+//                    System.out.println("你只能選擇0到" + (玩家1手牌.size() - 1));
+//                    return true;
+//                }
+//             
+//                玩家1桌牌.add(玩家1手牌.get(parameter));
+//                玩家1手牌.remove(parameter);
+//                return true;
+
+            }
+            case "拿":
+            case "拿牌":
+            case "take":
+            case "take-card": {
+
+                return doTakeCard(parameter);
+            }
+
+//在命令行設定文化指數
+            case "set-cluture": {
+
                 if (tokens.get(0).equalsIgnoreCase("set-culture") || tokens.get(0).equalsIgnoreCase("culture")) {//簡易指令take
                     if (tokens.size() != 2) { // set-culture X,X應該是正整數
                         return false;
@@ -611,7 +559,11 @@ public class GameEngine {
                 }
 
                 return false;
+            }
+            default:
+                System.out.println("Unknown keyword, " + keyword);
+                return false;
+
         }
     }
-
 }
